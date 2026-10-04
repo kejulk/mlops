@@ -26,8 +26,8 @@ def main():
     y_test = test_df['ProdTaken']
 
     # 2. Preprocessing setup
-    categorical_cols = X_train.select_dtypes(include=['object']).columns.tolist()
-    numeric_cols = X_train.select_dtypes(exclude=['object']).columns.tolist()
+    numeric_cols = X_train.select_dtypes(include=['number']).columns.tolist()
+    categorical_cols = X_train.select_dtypes(exclude=['number']).columns.tolist()
 
     preprocessor = ColumnTransformer(
         transformers=[
@@ -49,7 +49,7 @@ def main():
     }
 
     # 5. MLflow Tracking & Tuning
-    mlflow.set_tracking_uri("file://" + os.path.abspath("mlruns"))
+    mlflow.set_tracking_uri("sqlite:///mlruns.db")
     mlflow.set_experiment("Tourism_Package_Prediction")
 
     print("Starting experiment and tuning...")
