@@ -1,0 +1,46 @@
+name: MLOps End-to-End Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mlops-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r master_folder/requirements.txt
+
+      - name: Run Data Validation
+        run: python master_folder/validate_data.py master_folder/data/tourism.csv
+
+      - name: Run Data Preparation
+        run: python master_folder/prepare_data.py
+
+      - name: Run Model Training
+        run: python master_folder/train_model.py
+
+      - name: Commit and Push Updated Artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add master_folder/data/train.csv master_folder/data/test.csv master_folder/models/best_model.joblib
+          git commit -m "Automated commit: update model and data artifacts" || echo "No changes to commit"
+          git push origin main
