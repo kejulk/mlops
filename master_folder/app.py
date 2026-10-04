@@ -8,12 +8,15 @@ st.title("Tourism Package Purchase Prediction")
 # Load model
 @st.cache_resource
 def load_model():
-    return joblib.load("models/best_model.joblib")
+    # Dynamically find the path to the model relative to this script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(current_dir, "models", "best_model.joblib")
+    return joblib.load(model_path)
 
 try:
     model = load_model()
 except Exception as e:
-    st.error(f"Model not found. Please ensure 'models/best_model.joblib' is pushed to the repository. Error: {e}")
+    st.error(f"Model not found. Error: {e}")
     st.stop()
 
 # Application Inputs
@@ -64,13 +67,13 @@ if st.button("Predict Purchase Likelihood"):
         "Designation": [designation],
         "MonthlyIncome": [monthlyincome]
     }
-    
+
     # Save inputs into a dataframe
     input_df = pd.DataFrame(data)
-    
+
     # Predict
     prediction = model.predict(input_df)
-    
+
     st.subheader("Prediction Result:")
     if prediction[0] == 1:
         st.success("🎉 The customer is **LIKELY** to purchase the Wellness Tourism Package!")
