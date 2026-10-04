@@ -70,19 +70,15 @@ def main():
         # Log metrics
         mlflow.log_metric("accuracy", acc)
 
-        print("
---- Experiment Results ---")
+        print("\n--- Experiment Results ---")
         print("Best Parameters:", best_params)
         print("Accuracy on Test Set:", acc)
-        print("
-Classification Report:
-", classification_report(y_test, y_pred))
+        print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
         # 7. Save the best model
         model_path = os.path.join(model_dir, "best_model.joblib")
         joblib.dump(best_model, model_path)
-        print(f"
-Model saved to {model_path}")
+        print(f"\nModel saved to {model_path}")
 
 if __name__ == "__main__":
     main()
