@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
+import pandas.api.types as ptypes
 
 def prepare_data(input_path, output_dir):
     print(f"Loading data from {input_path}...")
@@ -13,10 +14,10 @@ def prepare_data(input_path, output_dir):
 
     # Handle missing values (basic imputation for completeness)
     for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = df[col].fillna(df[col].mode()[0])
-        else:
+        if ptypes.is_numeric_dtype(df[col]):
             df[col] = df[col].fillna(df[col].median())
+        else:
+            df[col] = df[col].fillna(df[col].mode()[0])
     print("Handled missing values.")
 
     print("Splitting data into train and test sets...")
