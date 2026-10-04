@@ -1,6 +1,6 @@
 pandas
-scikit-learn
+scikit-learn==1.6.1
 joblib
 mlflow
-xgboost
+xgboost==3.4.1
 streamlit
